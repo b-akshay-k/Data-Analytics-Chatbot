@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            background-color: #1e3a5f;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            background-color: #2b4a72;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            padding: 20px;
+        }
+        .chat-box {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #334a6f;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            color: #000;
+        }
+        .chat-input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #334a6f;
+            border-radius: 5px;
+        }
+        .chat-button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #407ac8;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .chat-button:hover {
+            background-color: #335f99;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" class="chat-input" id="messageText" placeholder="Type your message here...">
+        <button class="chat-button" onclick="sendMessage()">Send</button>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function sendMessage() {
+            const messageText = $('#messageText').val();
+            if (messageText.trim() !== '') {
+                $('#chat-box').append('<div><strong>You:</strong> ' + messageText + '</div>');
+                $.post("/ask", { messageText: messageText }, function(data) {
+                    $('#chat-box').append('<div><strong>Bot:</strong> ' + data.answer + '</div>');
+                    $('#messageText').val('');
+                    $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+                });
+            }
+        }
+
+        $(document).on('keypress', function(e) {
+            if(e.which == 13) {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
